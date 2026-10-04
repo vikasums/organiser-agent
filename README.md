@@ -17,6 +17,8 @@ This engine is engineered for professionals and developers who demand absolute c
 - **Zero Redundancy (Delta Engine):** Leverages an indexed SQLite ledger and OS-normalized file signatures (`mtime` + size) to process *only* newly added or modified files.
 - **Long-Term Cognitive Memory:** Combines SQLite state tracking and local vector embeddings so the agent can semantically search past execution logs for historical context.
 - **Immutable Audit Trails:** Never overwrites past work. Every execution drops a timestamped chronological report into an isolated history ledger.
+- **Configurable Bounded Loop:** Enforces a configurable turn cap (`MAX_TURNS`) to prevent infinite model tool calls.
+- **Strict Path Traversal Safeguard:** Uses path canonicalization to enforce sandbox boundaries so tools cannot read files outside `WORKSPACE_DIR`.
 - **Strictly Modular Architecture:** Separates configuration, database repositories, provider clients, and extensible tool registries for effortless scaling.
 
 ---
@@ -68,7 +70,7 @@ ollama pull nomic-embed-text:latest
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/organiser-agent.git
+   git clone https://github.com/vikasums/organiser-agent.git
    cd organiser-agent
    ```
 
@@ -95,7 +97,7 @@ ollama pull nomic-embed-text:latest
 
 ### 1. Environment Settings (`.env`)
 
-Customize runtime parameters, model choices, API endpoints, and directory paths in `.env`:
+Customize runtime parameters, model choices, turn limits, API endpoints, and directory paths in `.env`:
 
 ```env
 PROVIDER=ollama
@@ -106,6 +108,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 DB_PATH=agent_state.db
 WORKSPACE_DIR=./test_workspace
 HISTORY_DIR=./history
+MAX_TURNS=6
 ```
 
 ### 2. Tuning Prompts (`prompts.json`)

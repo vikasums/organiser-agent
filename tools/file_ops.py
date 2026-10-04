@@ -5,10 +5,25 @@ from core.config import HISTORY_DIR, WORKSPACE_DIR
 from core.database import get_connection
 
 
-def read_text_file(file_name: str) -> str:
-  file_path = os.path.join(WORKSPACE_DIR, file_name)
+def is_safe_path(base_dir: str, target_path: str) -> bool:
+  abs_base = os.path.abspath(base_dir)
+  abs_target = os.path.abspath(target_path)
   try:
-    with open(file_path, "r", encoding="utf-8") as f:
+    return os.path.commonpath([abs_base, abs_target]) == abs_base
+  except ValueError:
+    return False
+
+
+def read_text_file(file_name: str) -> str:
+  abs_target = os.path.join(WORKSPACE_DIR, file_name)
+  if not is_safe_path(WORKSPACE_DIR, abs_target):
+    return (
+        f"Security Error: Access denied to '{file_name}'. Path traversal"
+        " outside WORKSPACE_DIR is prohibited."
+    )
+
+  try:
+    with open(abs_target, "r", encoding="utf-8") as f:
       return f.read()
   except Exception as e:
     return f"Error reading file: {str(e)}"

@@ -1,7 +1,7 @@
 import json
 import os
 import sqlite3
-from core.config import LLM_MODEL, PROVIDER, WORKSPACE_DIR
+from core.config import LLM_MODEL, MAX_TURNS, PROVIDER, WORKSPACE_DIR
 from core.database import get_connection, init_db
 from core.llm import get_llm_client
 from tools.registry import AVAILABLE_TOOLS, TOOLS_SCHEMA
@@ -90,7 +90,7 @@ def run_super_organizer():
       {"role": "user", "content": user_prompt},
   ]
 
-  for turn in range(6):
+  for turn in range(MAX_TURNS):
     response = client.chat.completions.create(
         model=LLM_MODEL, messages=messages, tools=TOOLS_SCHEMA
     )
@@ -135,6 +135,9 @@ def run_super_organizer():
       conn.close()
       print("[State Secured] All files safely committed to SQLite ledger.")
       break
+  else:
+    print(f"\n[Warning] Execution stopped: reached maximum turn cap ({MAX_TURNS}) without final answer.")
+
 
 
 if __name__ == "__main__":
