@@ -1,0 +1,23 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# Sensitive data & local state
+.env
+agent_state.db
+secret.key
+
+# Runtime directories
+history/
+test_workspace/
+
+# IDE & OS specific files
+.DS_Store
+.vscode/
+.idea/
